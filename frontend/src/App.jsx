@@ -10,9 +10,11 @@ import AddListing from "./pages/AddListing";
 import ItemDetails from "./pages/ItemDetails";
 import MyListings from "./pages/MyListings";
 import EditListing from "./pages/EditListing";
+import Profile from "./pages/Profile";
 
 // Components
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 // Protected Route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -30,7 +32,6 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Home />} />
         <Route path="/listing/:id" element={<ItemDetails />} />
-        <Route path="*" element={<Navigate to="/" />} />
 
         {/* Protected Routes */}
         <Route
@@ -57,7 +58,19 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Catch-all — must be last */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

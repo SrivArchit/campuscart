@@ -16,6 +16,18 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
+// ✅ Auto-logout if token expires (401 response)
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("campuscart_user");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 // ─── Auth ───────────────────────────────
 export const registerUser = (data) => API.post("/auth/register", data);
 export const loginUser = (data) => API.post("/auth/login", data);
@@ -29,3 +41,4 @@ export const getMyListings = () => API.get("/listings/my");
 export const createListing = (data) => API.post("/listings", data);
 export const deleteListing = (id) => API.delete(`/listings/${id}`);
 export const markAsSold = (id) => API.patch(`/listings/${id}/sold`);
+export const updateProfile = (data) => API.put("/auth/profile", data);

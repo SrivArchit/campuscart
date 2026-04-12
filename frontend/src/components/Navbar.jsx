@@ -29,9 +29,13 @@ const Navbar = () => {
         <div className="hidden sm:flex items-center gap-3">
           {user ? (
             <>
-              <span className="text-sm text-gray-500">
+              {/* ✅ Make name clickable → goes to profile */}
+              <button
+                onClick={() => navigate("/profile")}
+                className="text-sm text-gray-500 hover:text-blue-600 transition"
+              >
                 Hi, {user.name.split(" ")[0]} 👋
-              </span>
+              </button>
 
               <Link
                 to="/add-listing"
@@ -101,9 +105,12 @@ const Navbar = () => {
         <div className="sm:hidden border-t border-gray-100 bg-white px-4 py-4 space-y-3 shadow-md animate-[slideDown_0.2s_ease-out]">
           {user ? (
             <>
-              <p className="text-sm text-gray-500 pb-2 border-b border-gray-100">
+              <button
+                onClick={() => { navigate("/profile"); closeMenu(); }}
+                className="block w-full text-left text-sm text-gray-500 hover:text-blue-600 pb-2 border-b border-gray-100 transition"
+              >
                 Hi, {user.name.split(" ")[0]} 👋
-              </p>
+              </button>
 
               <Link
                 to="/add-listing"

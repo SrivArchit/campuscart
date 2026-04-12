@@ -61,38 +61,38 @@ const createListing = async (req, res) => {
 // ─────────────────────────────────────────
 const getAllListings = async (req, res) => {
   try {
-    const { search, category, page = 1, limit = 20 } = req.query;
+    const { search, category, sort, page = 1, limit = 8 } = req.query;
 
-    const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
-    const skip = (pageNum - 1) * limitNum;
-
-    // Build filter object dynamically
     let filter = { status: "available" };
 
-    // 🔍 Search by title (case insensitive)
-    if (search) {
-      filter.title = { $regex: search, $options: "i" };
-    }
+    if (search) filter.title = { $regex: search, $options: "i" };
+    if (category && category !== "All") filter.category = category;
 
-    // 🗂️ Filter by category
-    if (category && category !== "All") {
-      filter.category = category;
-    }
+    // Sort logic
+    let sortOption = { createdAt: -1 };
+    if (sort === "price_asc") sortOption = { price: 1 };
+    else if (sort === "price_desc") sortOption = { price: -1 };
+    else if (sort === "newest") sortOption = { createdAt: -1 };
+    else if (sort === "oldest") sortOption = { createdAt: 1 };
 
-    const [listings, total] = await Promise.all([
-      Listing.find(filter)
-        .populate("seller", "name email")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limitNum),
-      Listing.countDocuments(filter),
-    ]);
+    // ✅ Pagination
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    const total = await Listing.countDocuments(filter);
+    const totalPages = Math.ceil(total / limitNum);
+
+    const listings = await Listing.find(filter)
+      .populate("seller", "name email")
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limitNum);
 
     res.status(200).json({
       listings,
-      page: pageNum,
-      totalPages: Math.ceil(total / limitNum),
+      totalPages,
+      currentPage: pageNum,
       total,
     });
   } catch (error) {

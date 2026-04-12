@@ -5,6 +5,24 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const connectDB = require("./config/db");
 
+// 🛡️ Custom NoSQL injection sanitizer (Express 5 compatible)
+const sanitize = (obj) => {
+  if (obj && typeof obj === "object") {
+    for (const key of Object.keys(obj)) {
+      if (key.startsWith("$")) {
+        delete obj[key];
+      } else {
+        sanitize(obj[key]);
+      }
+    }
+  }
+};
+const mongoSanitize = (req, res, next) => {
+  if (req.body) sanitize(req.body);
+  if (req.params) sanitize(req.params);
+  next();
+};
+
 dotenv.config();
 connectDB();
 
@@ -23,6 +41,9 @@ app.use(
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+
+// 🛡️ Prevent NoSQL injection
+app.use(mongoSanitize);
 
 // 🛡️ Rate limiting for auth routes (prevent brute force)
 const authLimiter = rateLimit({

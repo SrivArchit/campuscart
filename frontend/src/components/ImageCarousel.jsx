@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import ImageModal from "./ImageModal";
 
 const ImageCarousel = ({ images = [], title = "Product" }) => {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -6,6 +7,7 @@ const ImageCarousel = ({ images = [], title = "Product" }) => {
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const [touchStart, setTouchStart] = useState(null);
   const [slideDirection, setSlideDirection] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const mainImgRef = useRef(null);
 
@@ -103,7 +105,7 @@ const ImageCarousel = ({ images = [], title = "Product" }) => {
         <img
           src={images[activeIdx]}
           alt={`${title} - Image ${activeIdx + 1}`}
-          className={`w-full h-full transition-all duration-200 ease-out ${getSlideClass()}`}
+          className={`w-full h-full transition-all duration-200 ease-out cursor-zoom-in ${getSlideClass()}`}
           style={
             isZoomed
               ? {
@@ -114,6 +116,7 @@ const ImageCarousel = ({ images = [], title = "Product" }) => {
               : { objectFit: "contain" }
           }
           draggable={false}
+          onClick={() => setShowModal(true)}
         />
 
         {/* Prev / Next Arrows */}
@@ -173,7 +176,7 @@ const ImageCarousel = ({ images = [], title = "Product" }) => {
 
         {/* Zoom hint */}
         <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none hidden md:block">
-          🔍 Hover to zoom
+          🔍 Click to zoom
         </div>
       </div>
 
@@ -221,6 +224,17 @@ const ImageCarousel = ({ images = [], title = "Product" }) => {
             </button>
           ))}
         </div>
+      )}
+      {/* ✅ Image Zoom Modal */}
+      {showModal && (
+        <ImageModal
+          images={images}
+          activeIndex={activeIdx}
+          onClose={() => setShowModal(false)}
+          onPrev={goPrev}
+          onNext={goNext}
+          onGoTo={(i) => goTo(i)}
+        />
       )}
     </div>
   );

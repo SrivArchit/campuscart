@@ -13,6 +13,7 @@ const storage = new CloudinaryStorage({
   params: async (req, file) => {
     return {
       folder: "campuscart",
+      format: "webp",
       allowed_formats: ["jpg", "jpeg", "png", "webp"],
       // ✅ Unique filename so images never overwrite each other
       public_id: `listing_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
