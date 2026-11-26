@@ -1,11 +1,29 @@
 # 🛒 CampusCart — MUJ Student Marketplace
 
-A full-stack web application for **Manipal University Jaipur (MUJ)** students to buy and sell second-hand items within the campus community.
+A full-stack web application for **Manipal University Jaipur (MUJ)** students to buy and sell second-hand books, notes, electronics and more within the campus community.
 
+**🔗 Live demo:** https://campuscart-ten.vercel.app
+> The backend runs on a free hosting plan, so the first request can take up to a minute while it wakes up.
+
+[![CI](https://github.com/SrivArchit/CampusCart/actions/workflows/ci.yml/badge.svg)](https://github.com/SrivArchit/CampusCart/actions/workflows/ci.yml)
 ![React](https://img.shields.io/badge/React-19-blue?logo=react)
 ![Express](https://img.shields.io/badge/Express-5-black?logo=express)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?logo=mongodb)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-4-blue?logo=tailwindcss)
+
+<!-- Screenshots: save 2–3 images in docs/screenshots/ and uncomment these lines.
+![Home page](docs/screenshots/home.png)
+![Listing page](docs/screenshots/listing.png)
+-->
+
+## 🧠 Engineering highlights
+
+- **College-only sign-up**: the API rejects any email that doesn't end in `@muj.manipal.edu`.
+- **Auth and ownership checks**: JWT-protected routes, and only a listing's seller can edit or delete it (everyone else gets `403`).
+- **One endpoint for browsing**: `GET /api/listings` combines case-insensitive search, category filtering, four sort orders (newest, oldest, price up, price down) and pagination.
+- **Image pipeline**: up to 5 images per listing (5 MB each), uploaded through Multer straight to Cloudinary's CDN.
+- **Hardened API**: Helmet security headers, rate limiting on auth routes (15 attempts per 15 minutes), a NoSQL-injection sanitizer and CORS locked to the frontend's URL.
+- **Deployment**: frontend on Vercel, backend on Render, database on MongoDB Atlas. GitHub Actions lints and builds the frontend and checks the backend on every push.
 
 ## ✨ Features
 
@@ -61,8 +79,8 @@ campuscart/
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/YOUR_USERNAME/campuscart.git
-cd campuscart
+git clone https://github.com/SrivArchit/CampusCart.git
+cd CampusCart
 ```
 
 ### 2. Setup Backend
